@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class CircularDoubleLinkedList <T> implements CircularDoubleListInterface <T>{
+public class CircularDoubleLinkedList <T extends PubliclyCloneable> implements CircularDoubleListInterface <T>{
 
     public TwoWayNode head;
 
@@ -8,7 +8,57 @@ public class CircularDoubleLinkedList <T> implements CircularDoubleListInterface
 
     public int length;
 
+    public CircularDoubleLinkedList(){
 
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
+
+    }
+
+    public CircularDoubleLinkedList(CircularDoubleLinkedList<T> other){
+
+        TwoWayNode tempOther = other.head;
+
+        if(tempOther != null){
+
+            do{
+
+                this.add( (T)tempOther.data.clone());
+                tempOther = tempOther.nextNode;
+
+            }while(tempOther != other.head);
+
+        }
+
+    }
+
+    public Object clone(){
+        return new CircularDoubleLinkedList<T>(this);
+    }
+
+    public boolean equals(CircularDoubleLinkedList<T> other){
+
+        if(this.length != other.length) return false;
+
+        TwoWayNode tempThis = this.head;
+        TwoWayNode tempList = other.head;
+
+        if(tempThis == null && tempList == null) return true;
+
+        do{
+
+            if(!tempThis.data.equals(tempList.data)) return false;
+            tempList = tempList.nextNode;
+            tempThis = tempThis.nextNode;
+
+        }while(tempThis != this.head);
+
+        return true;
+
+    }
+
+    
     public void print(){
 
         TwoWayNode temp = this.head;
@@ -369,7 +419,10 @@ public class CircularDoubleLinkedList <T> implements CircularDoubleListInterface
     }
 
 
-    public class TwoWayNode  {
+
+
+
+    public class TwoWayNode implements PubliclyCloneable {
 
         public T data;
 
@@ -379,6 +432,20 @@ public class CircularDoubleLinkedList <T> implements CircularDoubleListInterface
 
         public TwoWayNode(T data){
             this.data = data;
+        }
+
+        public TwoWayNode(){
+        
+        }
+
+        public TwoWayNode(TwoWayNode other){
+            this.data = (T) other.data.clone();
+            this.nextNode = null;
+            this.prevNode = null;
+        }
+
+        public Object clone(){
+            return new TwoWayNode(this);
         }
 
         public String toString(){
@@ -391,21 +458,58 @@ public class CircularDoubleLinkedList <T> implements CircularDoubleListInterface
 
     public static void main(String[] args) {
 
-        CircularDoubleLinkedList<String> list = new CircularDoubleLinkedList<>();
-        list.add("oruç");
-        list.add("oruç");
-        list.add("oruç");
-        list.add("oruç");
-        list.add("oruç");
-        list.add("oruç");
-        list.add("oru");
-        list.add("oruç");
 
-        String arr [] = new String[15];
+        class Sample implements PubliclyCloneable{
 
-        arr =list.toArray(arr);
+            public String data ;
 
-        System.out.println(Arrays.toString(arr));
+            public Sample(String data){
+                this.data = data;
+            }
+
+            public String toString(){
+                return data;
+            }
+
+            public Sample (Sample other){
+                this.data = other.data;
+            }
+
+            public Object clone(){
+                return new Sample(this);
+            }
+
+            public boolean equals(Object object){
+
+                if(object == null) return false;
+
+                if(this.getClass() != object.getClass()) return false;
+
+                Sample sample = (Sample)object;
+
+                return this.data.equals(sample.data);
+
+            }
+
+
+        }
+
+        CircularDoubleLinkedList<Sample> list = new CircularDoubleLinkedList<Sample>();
+        list.add(new Sample("oruç"));
+        list.add(new Sample("tobb"));
+
+        System.out.println(list.head);
+        System.out.println(list.length);
+
+        CircularDoubleLinkedList<Sample> other =(CircularDoubleLinkedList<Sample>) list.clone();
+
+       other.print();
+       other.reversePrint();
+       System.out.println(other.length);
+
+       
+
+        System.out.println(list.equals(other));
         
         
         list.print();

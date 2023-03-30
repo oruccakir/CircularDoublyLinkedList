@@ -40,4 +40,8 @@ public interface CircularDoubleListInterface <T> extends PubliclyCloneable{
 }
 
 interface PubliclyCloneable extends Cloneable{
+    /**
+     * @return
+     */
+    public Object clone();
 }
